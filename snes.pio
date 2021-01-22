@@ -1,0 +1,12 @@
+;;; clock should be set up to 6 microseconds per cycle
+;;; autopush should be enabled, threshold = 16 bits
+.wrap_target
+START: 
+    NOP side 1[2]                   ; no operation, stall 3 cycles
+    SET x, 16 side 1               ; 1 cycle
+    SET pins, 1 side 1              ; set output pins (latch) to high, 1 cycle
+    SET pins, 0 side 1              ; set latch to low and start clock, 1 cycle
+BUTTON_DATA: 
+    IN 1,pins side 1                ; read a bit, 1 cycle
+    JMP x-- BUTTON_DATA side 0      ; on x != 0 jump to button-data
+.wrap                               ; when x == 0 then goto start
